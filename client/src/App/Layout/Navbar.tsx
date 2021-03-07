@@ -13,7 +13,7 @@ export default function NavBar({handleOpenForm}: Props)
         <Menu inverted fixed="top">
             <Container>
                 <Menu.Item>
-                    <img src="/assets/images/logo.png" alt="logo" style={{marginRight: 10}}/>
+                    <img src="/assets/Images/logo.png" alt="logo" style={{marginRight: 10}}/>
                     Reactivities
                 </Menu.Item>
                 <Menu.Item name="Activities"/>
