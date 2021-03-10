@@ -6,20 +6,35 @@ import { Activity } from '../Models/Activity';
 import NavBar from './Navbar';
 import ActivityDashboard from '../../Features/activities/dashboard/ActivityDashboard';
 import {v4 as uuid} from "uuid";
+import agent from '../Api/agent';
+import LoadingComponent from '../../Features/Loading';
 
 function App() {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [openForm, setOpenForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => 
+  {
 
-    axios.get<Activity[]>("http://localhost:5000/api/activities").then((res) => {
-      setActivities(res.data);
+    agent.Activities.list()
+    .then((res)=>
+      {
+      
+      const activities: Activity[] = [];
+      res.forEach((activity)=>
+        {
+          activity.date = activity.date.split("T")[0];
+          activities.push(activity);
+        });
+      setActivities(activities);
+      setLoading(false);  
+    })
 
-    });
-
+    
   }, [])
 
   function selectActivity(id: string)
@@ -49,6 +64,9 @@ function App() {
 
   function deleteActivity(id: string)
   {
+    setUpdating(true);
+    agent.Activities.delete(id).then(()=>setUpdating(false));
+
     setActivities(activities.filter(x=>x.id!==id));
   }
 
@@ -56,20 +74,35 @@ function App() {
   {
     if(activity.id)
     {
+      setUpdating(true);
       const newActivities = activities.filter((act)=>{return activity.id !==act.id;});
       newActivities.push(activity);
+      agent.Activities.edit(activity).then(res=>setUpdating(false));
+      
       setActivities(newActivities);
     }
     else
     {
-      setActivities([...activities, {...activity,id: uuid()}]);
+      setUpdating(true);
+      const id = uuid();
+      const newActivity = {...activity, id};
+      setActivities([...activities, newActivity]);
+      agent.Activities.post(newActivity).then(res=>setUpdating(false));
     }
     handleCloseForm();
+  }
+
+  if(loading || updating)
+  {
+    return(
+      <LoadingComponent content="Loading App"/>
+    )
   }
 
   return (
     <>
       <NavBar handleOpenForm={handleOpenForm}/>
+      
       <ActivityDashboard 
         activities={activities} 
         selectedActivity={selectedActivity}

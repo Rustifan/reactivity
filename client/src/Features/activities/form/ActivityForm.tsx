@@ -43,7 +43,7 @@ export default function ActivityForm({activity, handleCloseForm, editOrAddActivi
     <Segment clearing>
         <Form onSubmit={Submit}>
             <Form.Input placeholder="Title" name="title" value={activityState.title} onChange={Change}/>
-            <Form.Input placeholder="Date" name="date" value={activityState.date} onChange={Change}/>
+            <Form.Input placeholder="Date" type="date" name="date" value={activityState.date} onChange={Change}/>
             <Form.TextArea placeholder="Description" name="description" value={activityState.description} onChange={Change}/>
             <Form.Input placeholder="Category" name="category" value={activityState.category} onChange={Change}/>
             <Form.Input placeholder="Venue" name="venue" value={activityState.venue} onChange={Change}/>
