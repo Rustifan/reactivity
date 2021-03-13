@@ -1,15 +1,16 @@
+import { observer } from "mobx-react-lite";
 import React from "react";
-import { Button, Card, Icon, Image } from "semantic-ui-react";
-import { Activity } from "../../../App/Models/Activity";
+import { Button, Card, Image } from "semantic-ui-react";
+import { useStore } from "../../../App/Stores/store";
+import LoadingComponent from "../../Loading";
 
-interface Props {
-    activity: Activity;
-    cancelSelectedActivity: ()=>void;
-    handleOpenForm: (id?: string)=>void;
-    handleCloseForm: ()=>void;
-}
 
-export default function ActivityDetails({ activity, cancelSelectedActivity, handleOpenForm, handleCloseForm }: Props) {
+export default observer(function ActivityDetails() {
+    
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, handleOpenForm, cancelSelection, handleCloseForm} = activityStore;
+    if(!activity){return (<LoadingComponent/>);}
+
     return (
         <Card fluid>
             {   <Image src={`./assets/Images/categoryImages/${activity.category}.jpg`} />}
@@ -25,10 +26,10 @@ export default function ActivityDetails({ activity, cancelSelectedActivity, hand
             <Card.Content extra>
                 <Button.Group widths="2">
                     <Button basic color="blue" content="Edit" onClick={()=>handleOpenForm(activity.id)} />
-                    <Button basic color="grey" content="Cancel" onClick={()=>{cancelSelectedActivity(); handleCloseForm();}}/>
+                    <Button basic color="grey" content="Cancel" onClick={()=>{cancelSelection(); handleCloseForm();}}/>
 
                 </Button.Group>
             </Card.Content>
         </Card>
     )
-}
+});

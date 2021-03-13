@@ -1,13 +1,15 @@
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { Button, Container, Menu } from "semantic-ui-react";
+import { useStore } from "../Stores/store";
 
-interface Props
-{
-    handleOpenForm: (id?: string)=>void;
-}
 
-export default function NavBar({handleOpenForm}: Props)
+
+export default observer(function NavBar()
 {
+    const {activityStore} = useStore();    
+    const {handleOpenForm} = activityStore;
+
     return(
     
         <Menu inverted fixed="top">
@@ -23,4 +25,4 @@ export default function NavBar({handleOpenForm}: Props)
             </Container>
         </Menu>
     )
-}
+});

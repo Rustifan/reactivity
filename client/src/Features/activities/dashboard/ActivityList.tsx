@@ -1,14 +1,14 @@
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
-import { Activity } from "../../../App/Models/Activity";
+import { useStore } from "../../../App/Stores/store";
 
-interface Props {
-    activities: Activity[];
-    selectActivity: (id: string)=>void;
-    deleteActivity: (id: string)=>void;
-}
+export default observer(function ActivityList() {
+    
+    const {activityStore}=useStore();
+    const {updating, deletingId, activitiesByDate, selectActivity, deleteActivity}= activityStore;
 
-export default function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+    const activities = activitiesByDate();
     return (
         <Segment>
             
@@ -25,7 +25,7 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
                         </Item.Description>
                         <Item.Extra>
                             <Button floated="right" content="View" color="blue" onClick={()=>selectActivity(activity.id)}/>
-                            <Button floated="right" content="Delete" color="red" onClick={()=>deleteActivity(activity.id)}/>
+                            <Button loading = {updating && deletingId===activity.id} floated="right" content="Delete" color="red" onClick={()=>deleteActivity(activity.id)}/>
                             
                             <Label basic content={activity.category} />
                         </Item.Extra>
@@ -35,4 +35,4 @@ export default function ActivityList({ activities, selectActivity, deleteActivit
             </Item.Group>
         </Segment>
     )
-}
+});
