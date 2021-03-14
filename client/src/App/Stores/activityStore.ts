@@ -1,7 +1,6 @@
-import { makeAutoObservable} from "mobx";
+import { makeAutoObservable, runInAction} from "mobx";
 import agent from "../Api/agent";
 import { Activity } from "../Models/Activity";
-import {v4 as uuid } from "uuid"
 
 export default class ActivityStore
 {
@@ -11,7 +10,7 @@ export default class ActivityStore
     selectedActivity: Activity | undefined = undefined;
     openForm = false;
     updating = false;
-    isLoading = true;
+    isLoading = false;
     deletingId: string | null = null;
     
     constructor()
@@ -27,6 +26,52 @@ export default class ActivityStore
         });        
         return activities;
     
+    }
+    
+    getActivity = async (id: string)=>
+    {
+        let activity = this.activityMap.get(id);
+        
+        if(activity)
+        {
+            runInAction(()=>
+            {
+                this.selectedActivity = activity;
+            })
+            return activity;
+
+        }
+        else
+        {
+            this.setLoading(true);
+
+            try
+            {
+                activity = await agent.Activities.details(id);
+                
+                
+                this.insertActivity(activity);
+                runInAction(()=>
+                {
+                    this.selectedActivity = activity;
+
+                });
+                this.setLoading(false);
+                
+                return activity;
+            }
+            catch(error)
+            {
+                console.log(error);
+                this.setLoading(false);
+            }
+        }
+    }
+
+    insertActivity(activity: Activity)
+    {
+        activity.date = activity.date.split("T")[0];
+        this.activityMap.set(activity.id, activity);
     }
 
     loadActivities = async () =>
@@ -56,27 +101,7 @@ export default class ActivityStore
         this.isLoading = loading;
     }
 
-    selectActivity = (id: string)=>
-    {
-        const activity = this.activityMap.get(id);
-        this.selectedActivity = activity;
-    }
-
-    cancelSelection = () =>
-    {
-        this.selectedActivity = undefined;
-    }
-
-    handleOpenForm = (id? : string)=>
-    {
-        id? this.selectActivity(id) : this.cancelSelection();
-        this.openForm = true;
-    }
-
-    handleCloseForm = ()=>
-    {
-        this.openForm = false;
-    }
+  
 
     setUpdating = (updating: boolean)=>
     {
@@ -102,46 +127,44 @@ export default class ActivityStore
         
     }
     
-    editOrAddActivity = async (activity: Activity)=>
+    editActivity = async(activity: Activity)=>
     {
-        if(activity.id)
-        {
-            this.setUpdating(true);
-            this.activityMap.set(activity.id, activity);
+        this.setUpdating(true);
+        this.activityMap.set(activity.id, activity);
             
-            try
-            {
-                await agent.Activities.edit(activity);
-                
-                this.setUpdating(false);
-            }
-            catch(error)
-            {
-                console.log(error);
-                this.setUpdating(false);
-            }
-        }
-        else
+        try
         {
-            this.setUpdating(true);
-            const id = uuid();
-            const newActivity = {...activity, id};
-            try
-            {
-                await agent.Activities.post(newActivity);
-                this.activityMap.set(id, newActivity);
-                this.setUpdating(false);
-            }
-            catch(error)
-            {
-                console.log(error);
-                this.setUpdating(false);
-            }
+            await agent.Activities.edit(activity);
+            
+            this.setUpdating(false);
         }
-        this.handleCloseForm();
+        catch(error)
+        {
+            console.log(error);
+            this.setUpdating(false);
+        }
     }
 
-
+    addActivity = async (activity: Activity)=>
+    {
+            this.setUpdating(true);
+            console.dir(activity);
+            
+            console.log("adding");
+            try
+            {
+                await agent.Activities.post(activity);
+                this.activityMap.set(activity.id, activity);
+                this.setUpdating(false);
+            }
+            catch(error)
+            {
+                console.log(error);
+                this.setUpdating(false);
+            }
+    }
+    
+    
 
 }
 

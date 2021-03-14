@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite"
 import React from "react"
+import { useEffect } from "react"
 import { Container, Grid, GridColumn } from "semantic-ui-react"
 import { useStore } from "../../../App/Stores/store"
-import ActivityDetails from "../details/ActivityDetails"
-import ActivityForm from "../form/ActivityForm"
+import LoadingComponent from "../../Loading"
 import ActivityList from "./ActivityList"
 
 
@@ -11,7 +11,28 @@ import ActivityList from "./ActivityList"
 export default observer(function ActivityDashboard()
 {
     const {activityStore} = useStore();
-    const {selectedActivity, openForm} = activityStore;
+
+    useEffect(() => 
+    {
+
+        if(activityStore.activityMap.size <= 1)
+        {
+            activityStore.loadActivities();
+
+        }
+
+        
+    }, [activityStore])
+
+    
+
+    if(activityStore.isLoading)
+    {
+        return(
+        <LoadingComponent content="Loading App"/>
+        )
+    }
+    
 
     return(
     <Container style={{marginTop: "7em"}}>
@@ -21,14 +42,7 @@ export default observer(function ActivityDashboard()
             <ActivityList/>
         </Grid.Column>
         <GridColumn width="6">
-            {selectedActivity &&
-            <ActivityDetails/>
-            }
-            {
-                openForm&&
-                <ActivityForm/>
-                
-            }
+            <h2>Nesto</h2>
         </GridColumn>
     </Grid>
     

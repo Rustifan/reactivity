@@ -1,8 +1,11 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react"
+import { useHistory, useParams } from "react-router";
 import { Button, Form, Segment } from "semantic-ui-react";
 import { Activity } from "../../../App/Models/Activity";
 import { useStore } from "../../../App/Stores/store";
+import LoadingComponent from "../../Loading";
+import {v4 as uuid} from "uuid"
 
 
 
@@ -10,8 +13,10 @@ export default observer(function ActivityForm()
 {
 
     const activityStore = useStore().activityStore;
-    const {selectedActivity: activity, handleCloseForm, editOrAddActivity, updating} = activityStore;
-
+    const { isLoading, addActivity, editActivity, updating, getActivity} = activityStore;
+  
+    const {id} = useParams<{id:string}>();
+    const history = useHistory();
     const newActivity: Activity = {
         id: "",
         category: "",
@@ -22,9 +27,20 @@ export default observer(function ActivityForm()
         venue: ""
     }
 
-    const [activityState, setActivity] = useState(activity || newActivity);
-    //eslint-disable-next-line
-    useEffect(()=>{setActivity(activity || newActivity)},[activity]);
+    const [activityState, setActivity] = useState(newActivity);
+
+    useEffect(()=>
+    {
+        
+        if(id)
+        {
+            getActivity(id).then((activity)=>
+            {
+                setActivity(activity!);
+            })
+        }
+
+    },[id, getActivity]);
 
     function Change(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>)
     {
@@ -35,9 +51,36 @@ export default observer(function ActivityForm()
         
     }
 
+    if(isLoading)
+    {
+        return(
+            <LoadingComponent/>
+        )
+    }
+
+
     function Submit()
     {
-        editOrAddActivity(activityState);
+        if(activityState.id.length > 0)
+        {
+            editActivity(activityState)
+            .then(()=>
+            {
+                history.push("/activities/"+activityState.id)             
+            })
+            
+        }
+        else
+        {
+            const newId = uuid();
+           
+            addActivity({...activityState, id: newId})
+            .then(()=>
+            {
+                history.push("/activities/"+newId)             
+
+            })
+        }
     }
 
     return(
@@ -50,7 +93,7 @@ export default observer(function ActivityForm()
             <Form.Input placeholder="Venue" name="venue" value={activityState.venue} onChange={Change}/>
             <Form.Input placeholder="City" name="city" value={activityState.city} onChange={Change}/>
             <Button loading={updating} positive type="submit" floated="right" content="Submit" />
-            <Button onClick={handleCloseForm} floated="right" type="button" content="Cancel"/>
+            <Button floated="right" type="button" content="Cancel"/>
         </Form>
     </Segment>
     )
