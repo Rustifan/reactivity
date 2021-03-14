@@ -1,39 +1,35 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button, Item, Label, Segment } from "semantic-ui-react";
+import { Fragment } from "react";
+import { Header } from "semantic-ui-react";
 import { useStore } from "../../../App/Stores/store";
+import ActivityListItem from "./ActivityListItem";
 
 export default observer(function ActivityList() {
-    
-    const {activityStore}=useStore();
-    const {updating, deletingId, activitiesByDate, deleteActivity}= activityStore;
 
-    const activities = activitiesByDate();
+    const { activityStore } = useStore();
+    const { groupActivtiesByDate } = activityStore;
+
     return (
-        <Segment>
-            
-            <Item.Group divided>
-                {activities.map(activity => (
-                    <Item key={activity.id}>
-                    <Item.Content>
+        <>
 
-                        <Item.Header as="a">{activity.title}</Item.Header>
-                        <Item.Meta>{activity.date}</Item.Meta>
-                        <Item.Description>
-                            <div>{activity.description}</div>
-                            <div>{activity.city}, {activity.venue}</div>
-                        </Item.Description>
-                        <Item.Extra>
-                            <Button floated="right" content="View" color="blue" as={Link} to={`/activities/${activity.id}`} />
-                            <Button loading = {updating && deletingId===activity.id} floated="right" content="Delete" color="red" onClick={()=>deleteActivity(activity.id)}/>
-                            
-                            <Label basic content={activity.category} />
-                        </Item.Extra>
-                    </Item.Content>
-                    </Item>
-                ))}
-            </Item.Group>
-        </Segment>
+            {groupActivtiesByDate.map(([date, activities]) =>
+
+            (<Fragment key={date} >
+                <Header sub color="teal">
+                    {date}
+                </Header>
+
+
+                {activities.map(activity =>
+
+                    (<ActivityListItem key={activity.id} activity={activity} />)
+
+
+                )}
+            </Fragment>)
+            )}
+
+
+        </>
     )
 });

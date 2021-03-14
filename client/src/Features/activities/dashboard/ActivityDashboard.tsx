@@ -4,8 +4,9 @@ import { useEffect } from "react"
 import { Container, Grid, GridColumn } from "semantic-ui-react"
 import { useStore } from "../../../App/Stores/store"
 import LoadingComponent from "../../Loading"
+import ActivityFilters from "./ActivityFilters"
 import ActivityList from "./ActivityList"
-
+import "react-calendar/dist/Calendar.css"
 
 
 export default observer(function ActivityDashboard()
@@ -42,7 +43,7 @@ export default observer(function ActivityDashboard()
             <ActivityList/>
         </Grid.Column>
         <GridColumn width="6">
-            <h2>Nesto</h2>
+            <ActivityFilters/>
         </GridColumn>
     </Grid>
     
