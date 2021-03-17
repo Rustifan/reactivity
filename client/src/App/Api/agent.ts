@@ -28,7 +28,7 @@ axios.interceptors.response.use(async (response) =>
             {
                 toast.error(data);
             }
-            if(config.method ="put" && data.errors.hasOwnProperty("id"))
+            if(config.method ==="put" && data.errors.hasOwnProperty("id"))
             {
                 history.push("/not-found");
             }

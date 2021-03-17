@@ -22,7 +22,7 @@ export default class ActivityStore
     {
         const activities = Array.from(this.activityMap.values()).sort((a, b)=>
         {
-            return Date.parse(a.date)-Date.parse(b.date);
+            return a.date!.getTime()-b.date!.getTime();
         });        
         return activities;
     
@@ -33,7 +33,7 @@ export default class ActivityStore
 
         return Object.entries(this.activitiesByDate().reduce((activities, activity)=>
         {
-            const date = activity.date;
+            const date = activity.date!.toISOString().split("T")[0];
             activities[date] = activities[date] ? [...activities[date], activity] : [activity];
             
             return activities;
@@ -83,7 +83,7 @@ export default class ActivityStore
 
     insertActivity(activity: Activity)
     {
-        activity.date = activity.date.split("T")[0];
+        activity.date = new Date(activity.date!);
         this.activityMap.set(activity.id, activity);
     }
 
@@ -96,7 +96,7 @@ export default class ActivityStore
             const res = await agent.Activities.list();
             res.forEach((activity)=>
             {
-                activity.date = activity.date.split("T")[0];
+                activity.date = new Date(activity.date!);
                 this.activityMap.set(activity.id, activity);
             });
             this.setLoading(false);
@@ -161,9 +161,9 @@ export default class ActivityStore
     addActivity = async (activity: Activity)=>
     {
             this.setUpdating(true);
-            console.dir(activity);
             
-            console.log("adding");
+            
+            
             try
             {
                 await agent.Activities.post(activity);

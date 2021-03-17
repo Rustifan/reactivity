@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React from "react"
 import { Container, Header, Segment } from "semantic-ui-react";
-import { CommonStore } from "../../App/Stores/CommonStore";
 import { useStore } from "../../App/Stores/store"
 
 export default observer(function ServerError() {
