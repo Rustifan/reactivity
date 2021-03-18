@@ -7,6 +7,7 @@ using Domain;
 using Application.Activities;
 using Application.Acitivities;
 using Application.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -26,6 +27,7 @@ namespace API.Controllers
             return HandleResult<List<Activity>>(result);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
 
         public async Task<IActionResult> GetActivity(Guid id)
