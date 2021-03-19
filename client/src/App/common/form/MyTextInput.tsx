@@ -7,7 +7,7 @@ interface Props
     placeholder: string;
     name: string;
     label?: string;
-
+    type?: string;
 }
 
 export default function MyTextInPut(props: Props)

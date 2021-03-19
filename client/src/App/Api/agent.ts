@@ -3,14 +3,25 @@ import { toast } from "react-toastify";
 import { Activity } from "../Models/Activity";
 import {history} from "../../";
 import { store } from "../Stores/store";
+import { User, UserFormValues } from "../Models/user";
 
-const sleep = (time: number)=>{
+
+const sleep = (time: number)=>
+{
     return new Promise(resolve=>{
         setTimeout(resolve, time);
     });
 }
 
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+
+axios.interceptors.request.use((config)=>
+{
+    const token = store.commonStore.token;
+    if(token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+})
 
 axios.interceptors.response.use(async (response) =>
 {
@@ -65,7 +76,8 @@ axios.interceptors.response.use(async (response) =>
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
-const request={
+const request=
+{
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
     post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
     put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
@@ -73,7 +85,8 @@ const request={
     
 }
 
-const Activities={
+const Activities=
+{
 
     list: ()=>request.get<Activity[]>("/activities"),
     details: (id: string)=>request.get<Activity>(`/activities/${id}`),
@@ -82,8 +95,16 @@ const Activities={
     delete: (id: string)=>request.delete<void>("/activities/"+id)
 }
 
+const Account=
+{
+    current: ()=>request.get<User>("/account"),
+    login: (user: UserFormValues)=>request.post<User>("/account/login", user),
+    register: (user: UserFormValues)=>request.post<User>("/account/register", user)
+}
+
 const agent={
-    Activities
+    Activities,
+    Account
 }
 
 export default agent;

@@ -40,7 +40,7 @@ namespace Application.Acitivities
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 _context.Activities.Add(request.activity);
-                var res = await _context.SaveChangesAsync();
+                var res = await _context.SaveChangesAsync(CancellationToken.None);
                 if(res==0) return Result<Unit>.Faliure("failed to create activity");
                 return Result<Unit>.Sucess(Unit.Value);
             }

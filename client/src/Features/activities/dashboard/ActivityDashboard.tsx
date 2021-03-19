@@ -30,7 +30,7 @@ export default observer(function ActivityDashboard()
     if(activityStore.isLoading)
     {
         return(
-        <LoadingComponent content="Loading App"/>
+        <LoadingComponent content="Loading Activities..."/>
         )
     }
     
