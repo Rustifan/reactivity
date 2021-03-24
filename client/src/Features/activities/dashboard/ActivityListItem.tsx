@@ -1,8 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom";
-import { Button, Icon, Item, Segment } from "semantic-ui-react"
+import { Button, Icon, Item, Label, Segment } from "semantic-ui-react"
 import { Activity } from "../../../App/Models/Activity"
-import {format} from "date-fns"
+import { format } from "date-fns"
+import ActivityListItemAttendee from "./ActivityListItemAttendee";
 
 interface Props {
     activity: Activity
@@ -13,15 +14,30 @@ export default function ActivityListItem({ activity }: Props) {
     return (
         <Segment.Group>
             <Segment>
+                {
+                    activity.isCancelled &&
+                    <Label attached="top" color="red" content="Canceled" style={{textAlign:"center"}}/>
+                }
                 <Item.Group>
                     <Item>
-                        <Item.Image size="tiny" circular src="/assets/Images/user.png" />
+                        <Item.Image style={{marginBottom:3}} size="tiny" circular src="/assets/Images/user.png" />
                         <Item.Content>
                             <Item.Header as={Link} to={`/activities/${activity.id}`}>{activity.title}</Item.Header>
+                            <Item.Description>
+                                Hosted by {activity.host?.displayName}
+                                {activity.isHost && <Item.Description>
+                                    <Label basic color="orange">
+                                        You are hosting this activity
+                                </Label>
+                                </Item.Description>}
+                                {activity.isGoing && !activity.isHost && <Item.Description>
+                                    <Label basic color="green">
+                                        You are going to this activity
+                                </Label>
+                                </Item.Description>}
+                            </Item.Description>
                         </Item.Content>
-                        <Item.Description>
-                            Hosted by Pigro
-                        </Item.Description>
+
                     </Item>
                 </Item.Group>
             </Segment>
@@ -32,15 +48,15 @@ export default function ActivityListItem({ activity }: Props) {
                 </span>
             </Segment>
             <Segment secondary>
-                Attendies go here
+                <ActivityListItemAttendee attendees={activity.attendees!} />
             </Segment>
             <Segment clearing>
                 <span>
                     {activity.description}
-                    <Button as={Link} 
-                    to={`/activities/${activity.id}`} 
-                    floated="right" content="View"
-                    color="teal"/>
+                    <Button as={Link}
+                        to={`/activities/${activity.id}`}
+                        floated="right" content="View"
+                        color="teal" />
                 </span>
             </Segment>
         </Segment.Group>

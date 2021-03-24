@@ -43,7 +43,8 @@ namespace API.Extensions
                 });
             });
             services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
-            services.AddScoped<IUserAccessor, UserAccessor>();            
+            services.AddScoped<IUserAccessor, UserAccessor>();     
+             
             return services;
         }
     }

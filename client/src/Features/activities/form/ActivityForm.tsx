@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router";
 import { Button, Segment, Header } from "semantic-ui-react";
-import { Activity } from "../../../App/Models/Activity";
+import {  ActivityFormValues } from "../../../App/Models/Activity";
 import { useStore } from "../../../App/Stores/store";
 import LoadingComponent from "../../Loading";
 import {v4 as uuid} from "uuid"
@@ -13,27 +13,20 @@ import MyTextArea from "../../../App/common/form/MyTextArea";
 import MySelectInput from "../../../App/common/form/MySelectInput";
 import { categoryOptions } from "../../../App/common/options/categoryOptions";
 import MyDateInput from "../../../App/common/form/MyDateInput";
+import { Link } from "react-router-dom";
 
 
 export default observer(function ActivityForm()
 {
 
     const activityStore = useStore().activityStore;
-    const { isLoading, addActivity, editActivity, updating, getActivity} = activityStore;
+    const { isLoading, addActivity, editActivity,  getActivity} = activityStore;
   
     const {id} = useParams<{id:string}>();
     const history = useHistory();
-    const newActivity: Activity = {
-        id: "",
-        category: "",
-        title: "",
-        date: null,
-        description: "",
-        city: "",
-        venue: ""
-    }
 
-    const [activityState, setActivity] = useState(newActivity);
+
+    const [activityState, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
     const validationSchema = Yup.object({
         title: Yup.string().required(),
@@ -53,15 +46,15 @@ export default observer(function ActivityForm()
         {
             getActivity(id).then((activity)=>
             {
-                setActivity(activity!);
+                setActivity(new ActivityFormValues(activity));
             })
         }
 
     },[id, getActivity]);
 
-   function handleSubmitForm(activity: Activity)
+   function handleSubmitForm(activity: ActivityFormValues)
    {
-        if(activity.id.length===0)
+        if(!activity.id)
         {
             let newActivity = {...activity, id: uuid()};
             addActivity(newActivity).then(()=>history.push("/activities/"+newActivity.id));
@@ -83,7 +76,7 @@ export default observer(function ActivityForm()
    
     return(
     <Segment clearing>
-        <Formik validationSchema={validationSchema} enableReinitialize initialValues={activityState} onSubmit={values=>{handleSubmitForm(values)}}>
+        <Formik validationSchema={validationSchema} enableReinitialize initialValues={activityState} onSubmit={values=>{handleSubmitForm(new ActivityFormValues(values))}}>
             {({ handleSubmit, dirty, isSubmitting, isValid})=>(
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
                     <Header content="Activity Details" sub color="teal"/>
@@ -95,13 +88,14 @@ export default observer(function ActivityForm()
                     showTimeSelect
                     timeCaption="time"
                     dateFormat="MMMM d, yyyy h:mm aa" />
-                    <Header content="Location Details" sub color="teal"/>
                     <MyTextArea rows={2} placeholder="Description" name="description" />
                     <MySelectInput options={categoryOptions} placeholder="Category" name="category" />
+                    <Header content="Location Details" sub color="teal"/>
+
                     <MyTextInPut placeholder="Venue" name="venue" />
                     <MyTextInPut placeholder="City" name="city" />
-                    <Button disabled={!dirty || !isValid || isSubmitting} loading={updating} positive type="submit" floated="right" content="Submit" />
-                    <Button floated="right" type="button" content="Cancel"/>
+                    <Button disabled={!dirty || !isValid || isSubmitting} loading={isSubmitting} positive type="submit" floated="right" content="Submit" />
+                    <Button as={Link} to="/activities" floated="right" type="button" content="Cancel"/>
                 </Form>
             )
 
