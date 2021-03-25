@@ -4,6 +4,7 @@ import { Activity, ActivityFormValues } from "../Models/Activity";
 import {history} from "../../";
 import { store } from "../Stores/store";
 import { User, UserFormValues } from "../Models/user";
+import { Profile } from "../Models/profile";
 
 
 const sleep = (time: number)=>
@@ -103,9 +104,15 @@ const Account=
     register: (user: UserFormValues)=>request.post<User>("/account/register", user)
 }
 
+const Profiles=
+{
+    get: (username: string)=>request.get<Profile>("/profiles/"+username)
+}
+
 const agent={
     Activities,
-    Account
+    Account,
+    Profiles
 }
 
 export default agent;

@@ -16,6 +16,7 @@ import ServerError from '../../Features/errors/ServerError';
 import { useStore } from '../Stores/store';
 import LoadingComponent from '../../Features/Loading';
 import ModalContainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../Features/profiles/ProfilePage';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
                 <Route exact path="/activities" component={ActivityDashboard} />
                 <Route path="/activities/:id" component={ActivityDetails} />
                 <Route key={key} path={["/createActivity", "/editActivity/:id"]} component={ActivityForm} />
+                <Route path="/profiles/:username" component={ProfilePage}></Route>
                 <Route path="/errors" component={TestErrors} />
                 <Route path="/server-error" component={ServerError}/>
 

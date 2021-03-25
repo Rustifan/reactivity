@@ -32,4 +32,4 @@ export default observer(function ActivityList() {
 
         </>
     )
-});
+})
