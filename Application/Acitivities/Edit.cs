@@ -40,13 +40,13 @@ namespace Application.Acitivities
             }
             async Task<Result<Unit>> IRequestHandler<Command, Result<Unit>>.Handle(Command request, CancellationToken cancellationToken)
             {
-                Activity activity = await _context.Activities.FindAsync(request.activity.Id);
+                Activity activity = await _context.Activities.FindAsync(request.activity.Id, cancellationToken);
                 
                 if(activity == null) return null;
 
                 _mapper.Map(request.activity, activity);
 
-                bool result = await _context.SaveChangesAsync() > 0;
+                bool result = await _context.SaveChangesAsync(cancellationToken) > 0;
                 if(!result) return Result<Unit>.Faliure("failed to edit activity");
 
                 return Result<Unit>.Sucess(Unit.Value);

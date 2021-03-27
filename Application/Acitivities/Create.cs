@@ -28,6 +28,7 @@ namespace Application.Acitivities
             public CommandValidator()
             {
                 RuleFor(x=>x.activity.City).NotEmpty();
+                
             }
             
         }

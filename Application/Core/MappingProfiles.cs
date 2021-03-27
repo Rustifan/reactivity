@@ -23,6 +23,7 @@ namespace Application.Core
             CreateMap<AppUser, Profiles.Profile>().ForMember(p=>p.Image, 
             o=>o.MapFrom(x=>x.Photos.FirstOrDefault(m=>m.IsMain).Url));
 
+            CreateMap<Profiles.EditProfileDto, AppUser>();
         }
     }
 }

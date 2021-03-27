@@ -49,9 +49,10 @@ namespace API
             })
             .AddFluentValidation(config=>
             {
-
+               
                 config.RegisterValidatorsFromAssemblyContaining<Create>();
                 config.RegisterValidatorsFromAssemblyContaining<Edit>();
+                config.RegisterValidatorsFromAssemblyContaining<Application.Profiles.Edit>();
                 
             });
 
