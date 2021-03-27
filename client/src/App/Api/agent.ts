@@ -4,7 +4,7 @@ import { Activity, ActivityFormValues } from "../Models/Activity";
 import {history} from "../../";
 import { store } from "../Stores/store";
 import { User, UserFormValues } from "../Models/user";
-import { Photo, Profile } from "../Models/profile";
+import { EditProfile, Photo, Profile } from "../Models/profile";
 
 
 const sleep = (time: number)=>
@@ -115,7 +115,8 @@ const Profiles=
         })
     },
     setMainPhoto: (id: string)=>request.post(`/photos/${id}/setmain`, {}),
-    deletePhoto: (id: string)=>request.delete("/photos/"+id)
+    deletePhoto: (id: string)=>request.delete("/photos/"+id),
+    edit: (editProfile: EditProfile)=>request.put("/profiles", editProfile)
     
 }
 

@@ -19,6 +19,12 @@ export class Profile implements Profile
     }
 }
 
+export interface EditProfile
+{
+    displayName: string;
+    bio: string;
+}
+
 export interface Photo
 {
     id: string;

@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../Api/agent";
-import { Photo, Profile } from "../Models/profile";
+import { EditProfile, Photo, Profile } from "../Models/profile";
 import { store } from "./store";
 
 export default class ProfileStore
@@ -147,6 +147,31 @@ export default class ProfileStore
             {
                 this.loading = false;
 
+            })
+        }
+    }
+
+    editProfileHandler = async (editProf: EditProfile)=>
+    {
+        this.loading = true;
+        try
+        {
+            if(this.profile)
+            {
+                this.profile.bio = editProf.bio;
+                this.profile.displayName = editProf.displayName;
+                await agent.Profiles.edit(editProf);
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            runInAction(()=>
+            {
+                this.loading = false;
             })
         }
     }
