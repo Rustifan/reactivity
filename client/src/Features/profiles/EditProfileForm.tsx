@@ -1,7 +1,7 @@
 import { Formik, Form } from "formik";
 import { observer } from "mobx-react-lite";
 import React from "react"
-import { Button, Container, Segment } from "semantic-ui-react";
+import { Button, Container } from "semantic-ui-react";
 import { EditProfile, Profile } from "../../App/Models/profile";
 import * as Yup from "yup" 
 import MyTextInPut from "../../App/common/form/MyTextInput";
