@@ -11,14 +11,14 @@ namespace API.SignalR
         private readonly IMediator _mediator;
         public ChatHub(IMediator mediator)
         {
-
+            _mediator=mediator;
         }
 
         public async Task SendComment(Create.Command command)
         {
             var comment = await _mediator.Send(command);
             await Clients.Group(command.ActivityId.ToString())
-                .SendAsync("ReceveComment", comment.Value);
+                .SendAsync("ReciveComment", comment.Value);
         }
 
         public override async Task OnConnectedAsync()

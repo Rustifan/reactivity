@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -29,18 +30,12 @@ namespace Application.Comments
             }
             public async Task<Result<List<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.Include(x=>x.Comments)
-                 .FirstOrDefaultAsync(x=>x.Id == request.ActivityId);
-                if(activity==null) return null;
-                var comments = activity.Comments.OrderBy(x=>x.CreatedAt);
+                var comments = await _context.Comments.Where(c=>c.Activity.Id == request.ActivityId)
+                .ProjectTo<CommentDto>(_mapper.ConfigurationProvider).OrderBy(c=>c.CreatedAt)
+                .ToListAsync();
 
-                var commentsDto = new List<CommentDto>();
-                foreach(var comment in comments)
-                {
-                    commentsDto.Add(_mapper.Map<CommentDto>(comment));
-                }
-
-                return Result<List<CommentDto>>.Sucess(commentsDto);
+                
+                return Result<List<CommentDto>>.Sucess(comments);
             }
         }
     }
