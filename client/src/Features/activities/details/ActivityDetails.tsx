@@ -14,14 +14,15 @@ export default observer(function ActivityDetails() {
     
     const {id} = useParams<{id: string}>();
     const {activityStore} = useStore();
-    const {selectedActivity: activity, isLoading, getActivity} = activityStore;
+    const {selectedActivity: activity, isLoading, getActivity, clearSelectedActivity} = activityStore;
     useEffect(()=>
     {   if(id)
         {
             getActivity(id);
 
         }
-    }, [getActivity,id])
+        return clearSelectedActivity();
+    }, [getActivity,id, clearSelectedActivity])
     
 
     if(!activity || isLoading){return (<LoadingComponent/>);}

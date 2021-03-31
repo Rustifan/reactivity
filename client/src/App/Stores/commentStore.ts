@@ -30,15 +30,23 @@ export default class CommentStore
             {
                 runInAction(()=>
                 {
-                    
+                    comments.forEach(comment=>
+                        {
+                            comment.createdAt = new Date(comment.createdAt + "Z");
+                        })   
                     this.comments = comments;
                 });
             });
             this.hubConnection.on("ReciveComment", (comment: ChatComment)=>
             {
+               
+
                 runInAction(()=>
                 {
-                    this.comments.push(comment);
+                    comment.createdAt = new Date(comment.createdAt);
+               
+
+                    this.comments.unshift(comment);
 
                 })
             });
