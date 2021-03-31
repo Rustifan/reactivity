@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -22,16 +23,19 @@ namespace Application.Profiles
             private readonly IMapper _mapper;
             private readonly DataContext _context;
             private readonly ILogger _logger;
-            public Handler(IMapper mapper, DataContext context, ILogger<Handler> logger)
+            private readonly IUserAccessor _userAccessor;
+
+            public Handler(IMapper mapper, DataContext context, ILogger<Handler> logger, IUserAccessor userAccessor)
             {
                 _mapper = mapper;
                 _context = context;
                 _logger = logger;
+                _userAccessor = userAccessor;
             }
             public async Task<Result<Profile>> Handle(Query request, CancellationToken cancellationToken)
             {
                 _logger.Log(LogLevel.Information, request.UserName);
-                var user = await _context.Users.ProjectTo<Profile>(_mapper.ConfigurationProvider)
+                var user = await _context.Users.ProjectTo<Profile>(_mapper.ConfigurationProvider, new {currentUser=_userAccessor.GetUserName()})
                     .FirstOrDefaultAsync(x=>x.UserName==request.UserName, cancellationToken);
                 
 

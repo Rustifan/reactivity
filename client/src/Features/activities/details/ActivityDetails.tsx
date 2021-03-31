@@ -21,7 +21,7 @@ export default observer(function ActivityDetails() {
             getActivity(id);
 
         }
-        return clearSelectedActivity();
+        return clearSelectedActivity;
     }, [getActivity,id, clearSelectedActivity])
     
 
