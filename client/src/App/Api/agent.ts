@@ -4,7 +4,7 @@ import { Activity, ActivityFormValues } from "../Models/Activity";
 import {history} from "../../";
 import { store } from "../Stores/store";
 import { User, UserFormValues } from "../Models/user";
-import { EditProfile, Photo, Profile } from "../Models/profile";
+import { EditProfile, Photo, Profile, UserActivity } from "../Models/profile";
 import { PaginatedResult } from "../Models/pagination";
 import { URLSearchParams } from "node:url";
 
@@ -127,7 +127,9 @@ const Profiles=
     edit: (editProfile: EditProfile)=>request.put("/profiles", editProfile),
     updateFollowing: (username: string)=>request.post("/follow/"+username, {}),
     listFollowings: (username: string, predicate: string)=>
-        request.get<Profile[]>(`/follow/${username}?predicate=${predicate}`)
+        request.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
+    listActivities: (username: string, predicate: string) =>
+        request.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`)
 }
 
 const agent={

@@ -3,12 +3,12 @@ import React, { useState } from "react"
 import { useEffect } from "react"
 import {Container, Grid, GridColumn, Loader } from "semantic-ui-react"
 import { useStore } from "../../../App/Stores/store"
-import LoadingComponent from "../../Loading"
 import ActivityFilters from "./ActivityFilters"
 import ActivityList from "./ActivityList"
 import "react-calendar/dist/Calendar.css"
 import { PagingParams } from "../../../App/Models/pagination"
 import InfiniteScroll from "react-infinite-scroller"
+import ActivityListItemPlaceholder from "./ActivityListItemPlaceholder"
 
 
 export default observer(function ActivityDashboard()
@@ -38,12 +38,6 @@ export default observer(function ActivityDashboard()
 
     
 
-    if(activityStore.isLoading && !loadingNext)
-    {
-        return(
-        <LoadingComponent content="Loading Activities..."/>
-        )
-    }
     
 
     return(
@@ -51,7 +45,13 @@ export default observer(function ActivityDashboard()
     
     <Grid>
         <Grid.Column width="10">
-            <InfiniteScroll 
+            {activityStore.isLoading && !loadingNext ? (
+                <>
+                    <ActivityListItemPlaceholder/>
+                    <ActivityListItemPlaceholder/>
+                </>
+            ): (
+                <InfiniteScroll 
                 pageStart={0}
                 loadMore={handleNext}
                 hasMore={!loadingNext && !!pagination && pagination?.currentPage<pagination?.totalPages}
@@ -59,7 +59,9 @@ export default observer(function ActivityDashboard()
                 >
                 <ActivityList/>
 
-            </InfiniteScroll>
+                </InfiniteScroll>
+            )}
+            
             
         </Grid.Column>
         <GridColumn width="6">
