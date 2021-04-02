@@ -99,6 +99,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
+            
             var user = await _userManager.Users.Include(p=>p.Photos)
             .FirstOrDefaultAsync(x=>x.Email==email);
 
@@ -112,7 +113,7 @@ namespace API.Controllers
                 {
                     Username=user.UserName,
                     DisplayName=user.DisplayName,
-                    Image = user.Photos.FirstOrDefault(x=>x.IsMain).Url,
+                    Image = user.Photos.FirstOrDefault(x=>x.IsMain)?.Url,
                     Token = _tokenService.CreateToken(user, _config)
                 };
         }

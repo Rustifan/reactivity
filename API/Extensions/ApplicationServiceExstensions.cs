@@ -1,7 +1,6 @@
 using Application.Activities;
 using Application.Core;
 using Application.Interfaces;
-using Application.Photos;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
@@ -11,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using System.Collections.Generic;
+
 
 namespace API.Extensions
 {
@@ -24,7 +25,8 @@ namespace API.Extensions
             });
             
             services.AddDbContext<DataContext>(opt=>{
-                opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+            
+            opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
             });
 
             services.AddCors(opt=>
