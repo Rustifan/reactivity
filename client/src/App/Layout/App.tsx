@@ -32,7 +32,8 @@ function App() {
     }
     else
     {
-      commonStore.setAppLoaded();
+      userStore.getFacebookLoginStatus().then(()=>commonStore.setAppLoaded());
+      
     }
   },[commonStore, userStore])
 
