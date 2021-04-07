@@ -18,6 +18,8 @@ import LoadingComponent from '../../Features/Loading';
 import ModalContainer from '../common/modals/ModalContainer';
 import ProfilePage from '../../Features/profiles/ProfilePage';
 import PrivateRoute from './PrivateRoute';
+import RegisterSuccess from '../../Features/users/RegisterSuccess';
+import ConfirmEmail from '../../Features/users/ConfirmEmail';
 
 function App() {
 
@@ -58,6 +60,8 @@ function App() {
                 <PrivateRoute key={key} path={["/createActivity", "/editActivity/:id"]} component={ActivityForm} />
                 <PrivateRoute path="/profiles/:username" component={ProfilePage} />
                 <PrivateRoute path="/errors" component={TestErrors} />
+                <Route path="/account/registerSuccess" component={RegisterSuccess}/>
+                <Route path="/account/verifyEmail" component={ConfirmEmail}/>
                 <Route path="/server-error" component={ServerError}/>
                 <Route component={NotFound}/>
               </Switch>

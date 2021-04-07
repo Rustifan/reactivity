@@ -70,15 +70,10 @@ export default class UserStore
     {
         try
         {
-            const user = await agent.Account.register(creds);
-            store.commonStore.setToken(user.token);
-            runInAction(()=>{
-                this.user = user;
+            await agent.Account.register(creds);
+            
 
-            })
-            this.startRefreshTokenTimer(user);
-
-            history.push("/activities");
+            history.push("/account/registerSuccess?email="+creds.email);
             store.modalStore.closeModal();
             
         }

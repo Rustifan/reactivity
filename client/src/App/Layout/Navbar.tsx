@@ -5,7 +5,7 @@ import { Button, Container, Menu, Image, Dropdown } from "semantic-ui-react";
 import { useStore } from "../Stores/store";
 
 export default observer(function NavBar() {
-    const { userStore: { user, logout } } = useStore();
+    const { userStore: { user, logout, isLoggedIn } } = useStore();
 
     return (
 
@@ -15,22 +15,25 @@ export default observer(function NavBar() {
                     <img src="/assets/Images/logo.png" alt="logo" style={{ marginRight: 10 }} />
                     Reactivities
                 </Menu.Item>
-                <Menu.Item as={NavLink} to="/activities" name="Activities" />
-                <Menu.Item as={NavLink} to="/errors" name="Errors" />
+                {isLoggedIn &&(
+                <>
+                    <Menu.Item as={NavLink} to="/activities" name="Activities" />
+                    <Menu.Item as={NavLink} to="/errors" name="Errors" />
 
-                <Menu.Item>
-                    <Button as={NavLink} to="/createActivity" positive content="Create activity" />
-                </Menu.Item>
-                <Menu.Item position="right">
-                    <Image src={user?.image || "/assets/Images/user.png"} avatar spaced="right" />
-                    <Dropdown pointing="top left" text={user?.displayName}>
-                        <Dropdown.Menu>
-                            <Dropdown.Item as={Link} icon="user" to={`/profiles/${user?.username}`} text="My profile" />
-                            <Dropdown.Item onClick={logout} text="Logout" icon="power" />
-                        </Dropdown.Menu>
+                    <Menu.Item>
+                        <Button as={NavLink} to="/createActivity" positive content="Create activity" />
+                    </Menu.Item>
+                    <Menu.Item position="right">
+                        <Image src={user?.image || "/assets/Images/user.png"} avatar spaced="right" />
+                        <Dropdown pointing="top left" text={user?.displayName}>
+                            <Dropdown.Menu>
+                                <Dropdown.Item as={Link} icon="user" to={`/profiles/${user?.username}`} text="My profile" />
+                                <Dropdown.Item onClick={logout} text="Logout" icon="power" />
+                            </Dropdown.Menu>
 
-                    </Dropdown>
-                </Menu.Item>
+                        </Dropdown>
+                    </Menu.Item>
+                </>)}
             </Container>
         </Menu>
     )
